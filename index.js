@@ -1,5 +1,6 @@
 const express = require('express') // Importing express module
 const morgan = require('morgan') // Importing morgan 
+const cors = require('cors') // Import cors
 
 
 const app = express() // app can now access the ease of using express to build the backend
@@ -8,6 +9,7 @@ const app = express() // app can now access the ease of using express to build t
 /**
  * End of the day, middleware are really just functions that do something with the request before the routes, or can be done after the routes - like in the case of response.status(400).json({'error': 'no page found'})
 */
+app.use(cors())
 app.use(express.json()) // Middleware to parse request body as json
 /**
  * Create my own token that will return request.body
