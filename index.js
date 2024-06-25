@@ -116,6 +116,26 @@ app.post('/api/persons', (request, response) => {
 })
 
 /**
+ * Update number
+ */
+app.put('/api/persons/:id', async (request, response, next) => {
+    try {
+        const body = request.body
+        const updatePerson = {
+            name: body.name,
+            number: body.number
+        }
+
+        const updatedPerson = await Person.findByIdAndUpdate(request.params.id, updatePerson, { new: true })
+
+        return response.json(updatedPerson)
+    } 
+    catch (error) {
+        next(error)
+    }
+})
+
+/**
  * 
  * Error handler middleware
  */
