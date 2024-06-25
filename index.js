@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require('express') // Importing express module
 const morgan = require('morgan') // Importing morgan 
 const cors = require('cors') // Import cors
+const Person = require('./models/person') // Import Person class 
 
 
 const app = express() // app can now access the ease of using express to build the backend
@@ -48,8 +50,9 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    // response.send(phonebookData) -- nothing wrong with this if data passed in is json - except .json converts non-json to json so that would help filter another layer
-    response.json(phonebook)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
 app.get('/info', (request, response) => {
@@ -111,7 +114,7 @@ app.post('/api/persons', (request, response) => {
    response.json(phonebook)
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log('Server running on port', PORT)
 })
