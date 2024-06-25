@@ -109,9 +109,7 @@ app.post('/api/persons', async (request, response, next) => {
             name: body.name,
             number: body.number
         })
-
         const savedPerson = await person.save()
-
         response.json(savedPerson)
     } catch (error) {
         next(error)
@@ -150,7 +148,7 @@ const errorHandler = (error, request, response, next) => {
     }
     else if (error.name === 'ValidationError') {
         return response.status(400).json({
-            error: "Name is not of minimum length"
+            error: error.message
         })
     }
 
