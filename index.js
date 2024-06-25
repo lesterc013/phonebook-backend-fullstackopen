@@ -49,10 +49,14 @@ app.get('/', (request, response) => {
     response.send('<h1>Phonebook Exercise</h1>')
 })
 
+/**
+ * Get all persons
+ */
 app.get('/api/persons', (request, response) => {
-    Person.find({}).then(persons => {
-        response.json(persons)
-    })
+    Person.find({})
+        .then(persons => {
+            response.json(persons)
+        })
 })
 
 app.get('/info', (request, response) => {
@@ -76,21 +80,20 @@ app.get('/api/persons/:id', (request, response) => {
     response.json(person)
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = getPerson(id)
-    
-    if (!person) {
-        return response.status(400).json({
-            "error": "Bad request: ID requested is not in phonebook"             
+/**
+ * Delete person
+ */
+app.delete('/api/persons/:id', (request, response, next) => {
+    Person.findByIdAndDelete(request.params.id)
+        .then(result => {
+            response.status(204).end()
         })
-    }
-
-    phonebook = phonebook.filter(person => person.id !== id)
-    // response.json(phonebook) -- Should not have any response after a DELETE, just send back status 204 which means successful request and no additional info to send back
-    response.status(204).end()
+        .catch(error => next(error))
 })
 
+/**
+ * Posting new Person
+ */
 app.post('/api/persons', (request, response) => {
    const body = request.body
    if (!body.name || !body.number) {
@@ -111,6 +114,22 @@ app.post('/api/persons', (request, response) => {
    })
 
 })
+
+/**
+ * 
+ * Error handler middleware
+ */
+const errorHandler = (error, request, response, next) => {
+    if (error.name === 'CastError') {
+        return response.status(400).json({
+            error: "Malformatted id"
+        })
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
