@@ -59,10 +59,17 @@ app.get('/api/persons', (request, response) => {
         })
 })
 
-app.get('/info', (request, response) => {
-    const date = new Date()
-
-    response.send(`<p>Phonebook has info for ${phonebook.length} people</p> <p>${date}</p>`)
+/**
+ * Info for how many entries in the database
+ */
+app.get('/info', async (request, response, next) => {
+    try {
+        const count = await Person.estimatedDocumentCount()
+        const date = new Date()
+        response.send(`<p>Phonebook has info for ${count} people</p> <p>${date}</p>`)
+    } catch (error) {
+        next(error)
+    }
 })
 
 const getPerson = (id) => phonebook.find(person => person.id === id)
