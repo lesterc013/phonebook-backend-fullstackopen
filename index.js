@@ -98,20 +98,18 @@ app.post('/api/persons', (request, response) => {
             "error": "Name and/or number is missing!"
         })
    }
-   else if (phonebook.find(person => person.name === body.name)) {
-        return response.status(400).json({
-            "error": "Person already in phonebook!"
-        })
-   }
 
-   const newID = Math.floor(Math.random() * (999 - (phonebook.length + 1)))
-   const newPerson = {
-        "name": body.name,
-        "number": body.number,
-        "id": newID
-   }
-   phonebook = phonebook.concat(newPerson)
-   response.json(phonebook)
+   // Create the person object first with the request body data
+   const person = new Person({
+        name: body.name,
+        number: body.number
+   })
+
+   // Save using the created person object
+   person.save().then(savedPerson => {
+        response.json(savedPerson)
+   })
+
 })
 
 const PORT = process.env.PORT
