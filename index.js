@@ -101,25 +101,21 @@ app.delete('/api/persons/:id', (request, response, next) => {
 /**
  * Posting new Person
  */
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', async (request, response, next) => {
    const body = request.body
-   if (!body.name || !body.number) {
-        return response.status(400).json({
-            "error": "Name and/or number is missing!"
+
+    try {
+        const person = new Person({
+            name: body.name,
+            number: body.number
         })
-   }
 
-   // Create the person object first with the request body data
-   const person = new Person({
-        name: body.name,
-        number: body.number
-   })
+        const savedPerson = await person.save()
 
-   // Save using the created person object
-   person.save().then(savedPerson => {
         response.json(savedPerson)
-   })
-
+    } catch (error) {
+        next(error)
+    }
 })
 
 /**
@@ -150,6 +146,11 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
         return response.status(400).json({
             error: "Malformatted id"
+        })
+    }
+    else if (error.name === 'ValidationError') {
+        return response.status(400).json({
+            error: "Name is not of minimum length"
         })
     }
 
