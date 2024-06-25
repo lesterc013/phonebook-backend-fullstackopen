@@ -26,7 +26,19 @@ const personSchema = mongoose.Schema({
         type: String,
         minLength: 3
     },
-    number: String,
+    number: {
+        type: String,
+        minLength: 8,
+        validate: {
+            validator: function(number) {
+                if (!number.includes('-')) return false
+                const splitArr = number.split('-')
+                if (splitArr.length !== 2) return false
+                return splitArr[0].length >= 2 && splitArr[0].length < 4
+             },
+             message: 'Number provided is not in the correct format'
+        }
+    } 
 })
 
 personSchema.set('toJSON', {
@@ -36,7 +48,5 @@ personSchema.set('toJSON', {
         delete returnedObject.__v
     }
 })
-
-// const Person = mongoose.model('Person', personSchema) Instead of creating a Person
 
 module.exports = mongoose.model('Person', personSchema) // Export it
