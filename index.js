@@ -1,8 +1,8 @@
 require('dotenv').config()
 const express = require('express') // Importing express module
-const morgan = require('morgan') // Importing morgan 
+const morgan = require('morgan') // Importing morgan
 const cors = require('cors') // Import cors
-const Person = require('./models/person') // Import Person class 
+const Person = require('./models/person') // Import Person class
 
 
 const app = express() // app can now access the ease of using express to build the backend
@@ -20,28 +20,28 @@ app.use(express.json()) // Middleware to parse request body as json
  * Why is request.body a JS object? Because of express.json() which parsed JSON into JS object earlier
 */
 morgan.token('request-body', (request, response) =>  JSON.stringify(request.body))
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :request-body')) // Middleware to console log request data 
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :request-body')) // Middleware to console log request data
 
 let phonebook = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
+    {
+        'id': 1,
+        'name': 'Arto Hellas',
+        'number': '040-123456'
     },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
+    {
+        'id': 2,
+        'name': 'Ada Lovelace',
+        'number': '39-44-5323523'
     },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
+    {
+        'id': 3,
+        'name': 'Dan Abramov',
+        'number': '12-43-234345'
     },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
+    {
+        'id': 4,
+        'name': 'Mary Poppendieck',
+        'number': '39-23-6423122'
     }
 ]
 
@@ -102,7 +102,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
  * Posting new Person
  */
 app.post('/api/persons', async (request, response, next) => {
-   const body = request.body
+    const body = request.body
 
     try {
         const person = new Person({
@@ -130,20 +130,20 @@ app.put('/api/persons/:id', async (request, response, next) => {
         const updatedPerson = await Person.findByIdAndUpdate(request.params.id, updatePerson, { new: true })
 
         return response.json(updatedPerson)
-    } 
+    }
     catch (error) {
         next(error)
     }
 })
 
 /**
- * 
+ *
  * Error handler middleware
  */
 const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
         return response.status(400).json({
-            error: "Malformatted id"
+            error: 'Malformatted id'
         })
     }
     else if (error.name === 'ValidationError') {

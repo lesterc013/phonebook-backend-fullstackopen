@@ -19,7 +19,7 @@ mongoose.connect(url)
     })
     .catch(error => {
         console.log('Error connecting to MongoDB', error.message)
-    }) 
+    })
 
 const personSchema = mongoose.Schema({
     name: {
@@ -35,10 +35,10 @@ const personSchema = mongoose.Schema({
                 const splitArr = number.split('-')
                 if (splitArr.length !== 2) return false
                 return splitArr[0].length >= 2 && splitArr[0].length < 4
-             },
-             message: 'Number provided is not in the correct format'
+            },
+            message: 'Number provided is not in the correct format'
         }
-    } 
+    }
 })
 
 personSchema.set('toJSON', {
