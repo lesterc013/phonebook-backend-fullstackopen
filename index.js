@@ -66,7 +66,7 @@ app.get('/info', async (request, response, next) => {
     try {
         const count = await Person.estimatedDocumentCount()
         const date = new Date()
-        response.send(`<p>Phonebook has info for ${count} people</p> <p>${date}</p>`)
+        return response.send(`<p>Phonebook has info for ${count} people</p> <p>${date}</p>`)
     } catch (error) {
         next(error)
     }
@@ -74,17 +74,17 @@ app.get('/info', async (request, response, next) => {
 
 const getPerson = (id) => phonebook.find(person => person.id === id)
 
-app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = getPerson(id)
-
-    if (!person) {
-        return response.status(400).json({
-            "error": "Bad request: ID requested is not in phonebook"             
-        })
+/**
+ * Return one person by id
+ */
+app.get('/api/persons/:id', async (request, response, next) => {
+    try {
+        console.log(request.params.id)
+        const person = await Person.findById(request.params.id)
+        response.json(person)
+    } catch (error) {
+        next(error)
     }
-    
-    response.json(person)
 })
 
 /**
